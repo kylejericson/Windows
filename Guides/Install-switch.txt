@@ -1,0 +1,1 @@
+msiexec /i "SentinelInstaller_windows_64bit_v22_1_4_10010.msi"  /quiet SITE_TOKEN=
