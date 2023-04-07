@@ -1,5 +1,14 @@
-#Created by Kyle Ericson
-#Note the C:\IntuneWinAppUtil.exe file needs to be in the root of C:\
+$intuneUtilPath = "C:\IntuneWinAppUtil.exe"
+if (!(Test-Path $intuneUtilPath)) {
+    Write-Host "IntuneWinAppUtil.exe not found, downloading from GitHub..."
+    $downloadUrl = "https://github.com/microsoft/Microsoft-Win32-Content-Prep-Tool/archive/refs/tags/v1.8.4.zip"
+    $zipPath = "$env:TEMP\IntuneWinAppUtil.zip"
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $zipPath
+    Expand-Archive -Path $zipPath -DestinationPath $env:TEMP
+    Copy-Item "$env:TEMP\Microsoft-Win32-Content-Prep-Tool-1.8.4\IntuneWinAppUtil.exe" $intuneUtilPath
+    Remove-Item "$env:TEMP\IntuneWinAppUtil.zip" -Force
+    Remove-Item "$env:TEMP\Microsoft-Win32-Content-Prep-Tool-1.8.4" -Recurse -Force
+}
 
 Remove-Item $env:TEMP -Force -Recurse -ErrorAction SilentlyContinue
 
@@ -18,8 +27,8 @@ Function Get-FileName($initialDirectory)
 }
 
 Get-FileName
-echo $SelectedFile
-echo $SelectedFilePath
-echo $SelectedFileName 
+echo "`"$SelectedFile`""
+echo "`"$SelectedFilePath`""
+echo "`"$SelectedFileName`""
 
-Start-Process C:\IntuneWinAppUtil.exe "-c $SelectedFilePath -s $SelectedFileName -o $SelectedFilePath" -Wait 
+Start-Process "`"$intuneUtilPath`"" "-c `"$SelectedFilePath`" -s `"$SelectedFileName`" -o `"$SelectedFilePath`"" -Wait 
